@@ -1,0 +1,9 @@
+/.idea
+/*.iml
+/*/*.iml
+/LOG_DIR_IS_UNDEFINED
+
+/target
+/*/target
+*.log
+~/sources/

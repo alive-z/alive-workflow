@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mizhi.btbs.data.mapper.WfReDeploymentMapper">
+    <resultMap id="wfReDeploymentMap" type="wfReDeployment">
+        <id column="id" property="id"/><!--  -->
+        <result column="group_id" property="groupId"/><!-- 所属id -->
+        <result column="wf_type" property="wfType"/><!-- 流程类型 -->
+        <result column="step_num" property="stepNum"/><!-- 总步骤数目 -->
+    </resultMap>
+
+    <insert id="insert" parameterType="wfReDeployment" useGeneratedKeys="true" keyProperty="id">
+        insert into
+        wf_re_deployment(
+        <trim prefix="" prefixOverrides=",">
+            <if test="id != null">,id</if>
+            <if test="groupId != null">,group_id</if>
+            <if test="wfType != null">,wf_type</if>
+            <if test="stepNum != null">,step_num</if>
+        </trim>
+        )values(
+        <trim prefix="" prefixOverrides=",">
+            <if test="id != null">,#{id,jdbcType=VARCHAR}</if>
+            <if test="groupId != null">,#{groupId,jdbcType=VARCHAR}</if>
+            <if test="wfType != null">,#{wfType,jdbcType=VARCHAR}</if>
+            <if test="stepNum != null">,#{stepNum,jdbcType=INTEGER}</if>
+        </trim>
+        )
+    </insert>
+
+    <update id="update" parameterType="wfReDeployment">
+        update wf_re_deployment
+        <set>
+            <if test="groupId != null">group_id=#{groupId,jdbcType=VARCHAR},</if>
+            <if test="wfType != null">wf_type=#{wfType,jdbcType=VARCHAR},</if>
+            <if test="stepNum != null">step_num=#{stepNum,jdbcType=INTEGER},</if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <select id="load" parameterType="string" resultMap="wfReDeploymentMap">
+    		select * from wf_re_deployment where id=#{id}
+    	</select>
+
+    <sql id="queryCommonSql">
+        FROM wf_re_deployment wrd
+        <where>
+            <if test="groupId != null and groupId.trim() !=''">and wrd.group_id = #{groupId}</if>
+            <if test="wfType != null and wfType.trim() !=''">and wrd.wf_type = #{wfType}</if>
+        </where>
+    </sql>
+
+    <select id="queryList" parameterType="wfReDeploymentQuery" resultMap="wfReDeploymentMap">
+        select wrd.id
+            ,wrd.group_id
+            ,wrd.wf_type
+            ,wrd.step_num
+        <include refid="queryCommonSql"/>
+    </select>
+
+    <select id="queryCount" parameterType="wfReDeploymentQuery" resultType="int">
+        select count(1)
+        <include refid="queryCommonSql"/>
+    </select>
+
+    <delete id="delete" parameterType="string">
+    		delete from wf_re_deployment where id=#{id}
+    	</delete>
+</mapper>

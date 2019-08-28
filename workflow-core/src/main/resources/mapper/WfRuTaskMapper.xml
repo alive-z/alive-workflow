@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.mizhi.btbs.data.mapper.WfRuTaskMapper">
+    <resultMap id="wfRuTaskMap" type="wfRuTask">
+        <id column="id" property="id"/><!--  -->
+        <result column="group_id" property="groupId"/><!--  -->
+        <result column="re_deploy_id" property="reDeployId"/><!--  -->
+        <result column="re_procdef_id" property="reProcdefId"/><!--  -->
+        <result column="current_step" property="currentStep"/><!--  -->
+        <result column="biz_id" property="bizId"/><!--  -->
+        <result column="wf_type" property="wfType"/><!--  -->
+        <result column="status" property="status"/><!--  -->
+        <result column="first_step_re_procdef_id" property="firstStepReProcdefId"/><!--  -->
+        <result column="pre_step_re_procdef_id" property="preStepReProcdefId"/><!--  -->
+        <result column="current_step_re_procdef_id" property="currentStepReProcdefId"/><!--  -->
+    </resultMap>
+
+    <insert id="insert" parameterType="wfRuTask" useGeneratedKeys="true" keyProperty="id">
+        insert into
+        wf_ru_task(
+        <trim prefix="" prefixOverrides=",">
+            <if test="id != null">,id</if>
+            <if test="groupId != null">,group_id</if>
+            <if test="reDeployId != null">,re_deploy_id</if>
+            <if test="reProcdefId != null">,re_procdef_id</if>
+            <if test="currentStep != null">,current_step</if>
+            <if test="bizId != null">,biz_id</if>
+            <if test="wfType != null">,wf_type</if>
+            <if test="status != null">,status</if>
+            <if test="firstStepReProcdefId != null">,first_step_re_procdef_id</if>
+            <if test="preStepReProcdefId != null">,pre_step_re_procdef_id</if>
+            <if test="currentStepReProcdefId != null">,current_step_re_procdef_id</if>
+        </trim>
+        )values(
+        <trim prefix="" prefixOverrides=",">
+            <if test="id != null">,#{id,jdbcType=VARCHAR}</if>
+            <if test="groupId != null">,#{groupId,jdbcType=VARCHAR}</if>
+            <if test="reDeployId != null">,#{reDeployId,jdbcType=VARCHAR}</if>
+            <if test="reProcdefId != null">,#{reProcdefId,jdbcType=VARCHAR}</if>
+            <if test="currentStep != null">,#{currentStep,jdbcType=INTEGER}</if>
+            <if test="bizId != null">,#{bizId,jdbcType=VARCHAR}</if>
+            <if test="wfType != null">,#{wfType,jdbcType=VARCHAR}</if>
+            <if test="status != null">,#{status,jdbcType=VARCHAR}</if>
+            <if test="firstStepReProcdefId != null">,#{firstStepReProcdefId,jdbcType=INTEGER}</if>
+            <if test="preStepReProcdefId != null">,#{preStepReProcdefId,jdbcType=INTEGER}</if>
+            <if test="currentStepReProcdefId != null">,#{currentStepReProcdefId,jdbcType=INTEGER}</if>
+        </trim>
+        )
+    </insert>
+
+    <update id="update" parameterType="wfRuTask">
+        update wf_ru_task
+        <set>
+            <if test="groupId != null">group_id=#{groupId,jdbcType=VARCHAR},</if>
+            <if test="reDeployId != null">re_deploy_id=#{reDeployId,jdbcType=VARCHAR},</if>
+            <if test="reProcdefId != null">re_procdef_id=#{reProcdefId,jdbcType=VARCHAR},</if>
+            <if test="currentStep != null">current_step=#{currentStep,jdbcType=INTEGER},</if>
+            <if test="bizId != null">biz_id=#{bizId,jdbcType=VARCHAR},</if>
+            <if test="wfType != null">wf_type=#{wfType,jdbcType=VARCHAR},</if>
+            <if test="status != null">status=#{status,jdbcType=VARCHAR},</if>
+            <if test="firstStepReProcdefId != null">first_step_re_procdef_id=#{firstStepReProcdefId,jdbcType=INTEGER},
+            </if>
+            <if test="preStepReProcdefId != null">pre_step_re_procdef_id=#{preStepReProcdefId,jdbcType=INTEGER},</if>
+            <if test="currentStepReProcdefId != null">
+                current_step_re_procdef_id=#{currentStepReProcdefId,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <select id="load" parameterType="string" resultMap="wfRuTaskMap">
+    		select * from wf_ru_task where id=#{id}
+    	</select>
+
+    <sql id="queryCommonSql">
+        FROM wf_ru_task wrt
+        <where>
+            <if test="groupId != null and groupId.trim() !=''">and wrt.group_id = #{groupId}</if>
+            <if test="reDeployId != null and reDeployId.trim() !=''">and wrt.re_deploy_id = #{reDeployId}</if>
+            <if test="reProcdefId != null and reProcdefId.trim() !=''">and wrt.re_procdef_id = #{reProcdefId}</if>
+            <if test="currentStep != null">and wrt.current_step = #{currentStep}</if>
+
+            <choose>
+                <when test="bizId != null and bizId.trim() !=''">and wrt.biz_id = #{bizId}</when>
+                <when test="bizIds !=null and bizIds.size>0">
+                    and wrt.biz_id in
+                    <foreach collection="bizIds" index="index" item="item" open="(" separator="," close=")">#{item}
+                    </foreach>
+                </when>
+            </choose>
+            <if test="wfType != null and wfType.trim() !=''">and wrt.wf_type = #{wfType}</if>
+            <if test="status != null and status.trim() !=''">and wrt.status = #{status}</if>
+        </where>
+    </sql>
+
+    <select id="queryList" parameterType="wfRuTaskQuery" resultMap="wfRuTaskMap">
+        select wrt.id
+            ,wrt.group_id
+            ,wrt.re_deploy_id
+            ,wrt.re_procdef_id
+            ,wrt.current_step
+            ,wrt.biz_id
+            ,wrt.wf_type
+            ,wrt.status
+            ,wrt.first_step_re_procdef_id
+            ,wrt.pre_step_re_procdef_id
+            ,wrt.current_step_re_procdef_id
+        <include refid="queryCommonSql"/>
+    </select>
+
+    <select id="queryCount" parameterType="wfRuTaskQuery" resultType="int">
+        select count(1)
+        <include refid="queryCommonSql"/>
+    </select>
+
+    <delete id="delete" parameterType="string">
+    		delete from wf_ru_task where id=#{id}
+    	</delete>
+</mapper>
